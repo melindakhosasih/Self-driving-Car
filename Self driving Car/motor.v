@@ -10,8 +10,8 @@ module motor(
     output [1:0]l_IN
 );
 
-    reg [9:0]next_left_motor, next_right_motor;
-    reg [9:0]left_motor, right_motor;
+    reg [10:0]next_left_motor, next_right_motor;
+    reg [10:0]left_motor, right_motor;
     reg [1:0] r_temp, l_temp;   ////////////////
     wire left_pwm, right_pwm;
 
@@ -26,37 +26,37 @@ module motor(
     /////////////////////////////////////////////////////////////////////////////////
     always@(posedge clk, posedge rst)begin
       if(rst)begin
-        left_motor <= 9d'0;
-        right_motor <= 9d'0;
+        left_motor <= 10'd0;
+        right_motor <= 10'd0;
       end else begin
-        left_motor <= next_left_motor
-        right_motor <= next_right_motor
+        left_motor <= next_left_motor;
+        right_motor <= next_right_motor;
       end
     end
 
     always@(*)begin
       case(mode)
         2'b00 : begin
-          next_left_motor = 9'd0;
-          next_right_motor = 9'd0;
+          next_left_motor = 10'd0;
+          next_right_motor = 10'd0;
           l_temp = 2'b00;
           r_temp = 2'b00;
         end
         2'b01 : begin
-          next_left_motor = 9'd600;          //
-          next_right_motor = 9'd300;
+          next_left_motor = 10'd600;          //
+          next_right_motor = 10'd300;
           l_temp = 2'b10;                  // 
           r_temp = 2'b10;
         end
         2'b10 : begin
-          next_left_motor = 9'd300;
-          next_right_motor = 9'd600;       //
+          next_left_motor = 10'd300;
+          next_right_motor = 10'd600;       //
           l_temp = 2'b10;
           r_temp = 2'b10;                //
         end
         2'b11 : begin
-          next_left_motor = 9'd750;
-          next_right_motor = 9'd750;
+          next_left_motor = 10'd750;
+          next_right_motor = 10'd750;
           l_temp = 2'b10;
           r_temp = 2'b10;
         end
@@ -69,7 +69,7 @@ endmodule
 module motor_pwm (
     input clk,
     input reset,
-    input [9:0]duty,
+    input [10:0]duty,
 	output pmod_1 //PWM
 );
         
@@ -88,7 +88,7 @@ module PWM_gen (
     input wire clk,
     input wire reset,
 	input [31:0] freq,
-    input [9:0] duty,
+    input [10:0] duty,
     output reg PWM
 );
     wire [31:0] count_max = 100_000_000 / freq;
