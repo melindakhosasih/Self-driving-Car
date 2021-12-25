@@ -12,16 +12,57 @@ module motor(
 
     reg [9:0]next_left_motor, next_right_motor;
     reg [9:0]left_motor, right_motor;
+    reg [1:0] r_temp, l_temp;   ////////////////
     wire left_pwm, right_pwm;
 
     motor_pwm m0(clk, rst, left_motor, left_pwm);
     motor_pwm m1(clk, rst, right_motor, right_pwm);
 
     assign pwm = {left_pwm,right_pwm};
+    assign r_IN = r_temp;
+    assign l_IN = l_temp;
 
     // TODO: trace the rest of motor.v and control the speed and direction of the two motors
-    
+    /////////////////////////////////////////////////////////////////////////////////
+    always@(posedge clk, posedge rst)begin
+      if(rst)begin
+        left_motor <= 9d'0;
+        right_motor <= 9d'0;
+      end else begin
+        left_motor <= next_left_motor
+        right_motor <= next_right_motor
+      end
+    end
 
+    always@(*)begin
+      case(mode)
+        2'b00 : begin
+          next_left_motor = 9'd0;
+          next_right_motor = 9'd0;
+          l_temp = 2'b00;
+          r_temp = 2'b00;
+        end
+        2'b01 : begin
+          next_left_motor = 9'd600;          //
+          next_right_motor = 9'd300;
+          l_temp = 2'b10;                  // 
+          r_temp = 2'b10;
+        end
+        2'b10 : begin
+          next_left_motor = 9'd300;
+          next_right_motor = 9'd600;       //
+          l_temp = 2'b10;
+          r_temp = 2'b10;                //
+        end
+        2'b11 : begin
+          next_left_motor = 9'd750;
+          next_right_motor = 9'd750;
+          l_temp = 2'b10;
+          r_temp = 2'b10;
+        end
+      endcase
+    end
+    /////////////////////////////////////////////////////////////////////////////////
     
 endmodule
 
@@ -51,7 +92,7 @@ module PWM_gen (
     output reg PWM
 );
     wire [31:0] count_max = 100_000_000 / freq;
-    wire [31:0] count_duty = count_max * duty / 1024;
+    wire [31:0] count_duty = (duty > 0 ? count_max * duty / 1024 : 0);
     reg [31:0] count;
         
     always @(posedge clk, posedge reset) begin
