@@ -11,7 +11,7 @@ module Lab9(
     output IN3, 
     output IN4,
     output left_pwm,
-    output right_pwm,
+    output right_pwm
     // You may modify or add more input/ouput yourself.
 );
     // We have connected the motor, tracker_sensor and sonic_top modules in the template file for you.
