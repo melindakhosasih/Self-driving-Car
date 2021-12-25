@@ -75,8 +75,12 @@ module PosCounter(clk, rst, echo, distance_count);
     assign finish = ~echo_reg1 & echo_reg2; //  the reflected signal has ended
 
     // TODO: trace the code and calculate the distance, output it to <distance_count>
-    assign distance_count = (distance_register >> 1) * 0.034;
+    /////////////////////////////////////////////////////////////////////////////////
+
+    assign distance_count = (distance_register >> 1) * 340;
     
+    /////////////////////////////////////////////////////////////////////////////////
+
 endmodule
 
 // send trigger signal to sensor
