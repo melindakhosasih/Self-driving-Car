@@ -4,75 +4,72 @@
 module motor(
     input clk,
     input rst,
-    input [1:0]mode,
-    output  [1:0]pwm,
-    output [1:0]r_IN,
-    output [1:0]l_IN
+    input [1:0] mode,
+    output [1:0] pwm,
+    output [1:0] r_IN,
+    output [1:0] l_IN
 );
-
-    reg [10:0]next_left_motor, next_right_motor;
-    reg [10:0]left_motor, right_motor;
-    reg [1:0] r_temp, l_temp;   ////////////////
+    reg [9:0] next_left_motor, next_right_motor;
+    reg [9:0] left_motor, right_motor;
+    reg [1:0] r_temp, l_temp; // direction
     wire left_pwm, right_pwm;
 
     motor_pwm m0(clk, rst, left_motor, left_pwm);
     motor_pwm m1(clk, rst, right_motor, right_pwm);
 
-    assign pwm = {left_pwm,right_pwm};
+    assign pwm = {left_pwm, right_pwm};
     assign r_IN = r_temp;
     assign l_IN = l_temp;
 
     // TODO: trace the rest of motor.v and control the speed and direction of the two motors
-    /////////////////////////////////////////////////////////////////////////////////
-    always@(posedge clk, posedge rst)begin
-      if(rst)begin
-        left_motor <= 10'd0;
-        right_motor <= 10'd0;
-      end else begin
-        left_motor <= next_left_motor;
-        right_motor <= next_right_motor;
-      end
+    always@(posedge clk, posedge rst) begin
+        if(rst) begin
+            left_motor <= 10'd0;
+            right_motor <= 10'd0;
+        end else begin
+            left_motor <= next_left_motor;
+            right_motor <= next_right_motor;
+        end
     end
 
     always@(*)begin
-      case(mode)
-        2'b00 : begin
-          next_left_motor = 10'd0;
-          next_right_motor = 10'd0;
-          l_temp = 2'b00;
-          r_temp = 2'b00;
-        end
-        2'b01 : begin
-          next_left_motor = 10'd600;          //
-          next_right_motor = 10'd300;
-          l_temp = 2'b10;                  // 
-          r_temp = 2'b10;
-        end
-        2'b10 : begin
-          next_left_motor = 10'd300;
-          next_right_motor = 10'd600;       //
-          l_temp = 2'b10;
-          r_temp = 2'b10;                //
-        end
-        2'b11 : begin
-          next_left_motor = 10'd750;
-          next_right_motor = 10'd750;
-          l_temp = 2'b10;
-          r_temp = 2'b10;
-        end
-      endcase
+        case(mode)
+            2'b00 : begin   // stop
+                next_left_motor = 10'd0;
+                next_right_motor = 10'd0;
+                l_temp = 2'b00; // off
+                r_temp = 2'b00; // off
+            end
+            2'b01 : begin   // turn left
+                next_left_motor = 10'd300;
+                next_right_motor = 10'd300;
+                l_temp = 2'b01; // backward
+                r_temp = 2'b10; // forward
+            end
+            2'b10 : begin   // turn right
+                next_left_motor = 10'd300;
+                next_right_motor = 10'd300;
+                l_temp = 2'b10; // forward
+                r_temp = 2'b01; // backward
+            end
+            2'b11 : begin   // go forward
+                next_left_motor = 10'd750;
+                next_right_motor = 10'd750;
+                l_temp = 2'b10; // forward
+                r_temp = 2'b10; // forward
+            end
+        endcase
     end
-    /////////////////////////////////////////////////////////////////////////////////
+
     
 endmodule
 
 module motor_pwm (
     input clk,
     input reset,
-    input [10:0]duty,
+    input [9:0] duty,
 	output pmod_1 //PWM
 );
-        
     PWM_gen pwm_0 ( 
         .clk(clk), 
         .reset(reset), 
@@ -83,16 +80,16 @@ module motor_pwm (
 
 endmodule
 
-//generte PWM by input frequency & duty cycle
+//generate PWM by input frequency & duty cycle
 module PWM_gen (
     input wire clk,
     input wire reset,
 	input [31:0] freq,
-    input [10:0] duty,
+    input [9:0] duty,
     output reg PWM
 );
     wire [31:0] count_max = 100_000_000 / freq;
-    wire [31:0] count_duty = (duty > 0 ? count_max * duty / 1024 : 0);
+    wire [31:0] count_duty = count_max * duty / 1024;
     reg [31:0] count;
         
     always @(posedge clk, posedge reset) begin
@@ -111,3 +108,4 @@ module PWM_gen (
         end
     end
 endmodule
+
