@@ -44,13 +44,13 @@ module tracker_sensor(clk, reset, left_track, right_track, mid_track, state);
         if(left_track == 1 && mid_track == 0 && right_track == 1)begin
           state <= 2'b11;         // forward
         end else if(left_track == 0 && mid_track == 0 && right_track == 1)begin
-          state <= 2'b10;         // left
+          state <= 2'b01;         // left
         end else if(left_track == 0 && mid_track == 1 && right_track == 1)begin
-          state <= 2'b10;         // left
+          state <= 2'b01;         // left
         end else if(left_track == 1 && mid_track == 0 && right_track == 0)begin
-          state <= 2'b01;         // right
+          state <= 2'b10;         // right
         end else if(left_track == 1 && mid_track == 1 && right_track == 0)begin
-          state <= 2'b01;         // right
+          state <= 2'b10;         // right
         end else begin
           state <= 2'b00;         // stop
         end
