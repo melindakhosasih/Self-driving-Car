@@ -77,7 +77,7 @@ module PosCounter(clk, rst, echo, distance_count);
     // TODO: trace the code and calculate the distance, output it to <distance_count>
     /////////////////////////////////////////////////////////////////////////////////
 
-    assign distance_count = (distance_register >> 1) * 340;
+	assign distance_count = (distance_register >> 1) * 0.034;
     
     /////////////////////////////////////////////////////////////////////////////////
 
