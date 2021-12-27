@@ -7,15 +7,15 @@ module sonic_top(clk, rst, Echo, Trig, distance);
 	output Trig;
     output [19:0] distance;
 
-	wire[19:0] dis;
+	wire [19:0] dis;
     wire clk1M;
 	wire clk_2_17;
 
     assign distance = dis;
 
-    div clk1(clk ,clk1M);   //  clock divider for 1us clock (10^-6 second)
-	TrigSignal u1(.clk(clk), .rst(rst), .trig(Trig));   //  every 1.000 the signal is '1' but '0' for 9.999.000 (one pulse for 10us clock for 100MHz)
-	PosCounter u2(.clk(clk1M), .rst(rst), .echo(Echo), .distance_count(dis));   //    count the distance every 1us second
+    div clk1(clk, clk1M);   // clock divider for 1us clock (10^-6 second)
+	TrigSignal u1(.clk(clk), .rst(rst), .trig(Trig));   // every 1.000 the signal is '1' but '0' for 9.999.000 (one pulse for 10us clock for 100MHz)
+	PosCounter u2(.clk(clk1M), .rst(rst), .echo(Echo), .distance_count(dis));   // count the distance every 1us second
  
 endmodule
 
@@ -71,16 +71,12 @@ module PosCounter(clk, rst, echo, distance_count);
         endcase
     end
 
-    assign start = echo_reg1 & ~echo_reg2;  //  start to receive the reflected signal
-    assign finish = ~echo_reg1 & echo_reg2; //  the reflected signal has ended
+    assign start = echo_reg1 & ~echo_reg2;  // start receiving the reflected signal
+    assign finish = ~echo_reg1 & echo_reg2; // no more reflected signal
 
     // TODO: trace the code and calculate the distance, output it to <distance_count>
-    /////////////////////////////////////////////////////////////////////////////////
-
-	assign distance_count = (distance_register >> 1) * 0.034;
+    assign distance_count = (distance_register >> 1) * 340;
     
-    /////////////////////////////////////////////////////////////////////////////////
-
 endmodule
 
 // send trigger signal to sensor
@@ -115,7 +111,7 @@ module TrigSignal(clk, rst, trig);
 endmodule
 
 // clock divider for T = 1us clock
-module div(clk ,out_clk);
+module div(clk, out_clk);
     input clk;
     output out_clk;
     reg out_clk;
