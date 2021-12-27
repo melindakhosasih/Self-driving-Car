@@ -51,7 +51,7 @@ module Lab9(
         if(rst) begin
             mode <= 2'b00;
         end else begin
-            if(distance > 5) begin
+            if(distance >= 1) begin
                 mode <= tracker_state;
             end else begin
                 mode <= 2'b00;
