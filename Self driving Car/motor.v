@@ -43,14 +43,14 @@ module motor(
             2'b01 : begin   // turn left
                 next_left_motor = 10'd750;
                 next_right_motor = 10'd750;
-                l_temp = 2'b10; // backward
-                r_temp = 2'b10; // forward
+                l_temp = 2'b01; // backward
+                r_temp = 2'b01; // forward
             end
             2'b10 : begin   // turn right
                 next_left_motor = 10'd750;
                 next_right_motor = 10'd750;
-                l_temp = 2'b01; // forward
-                r_temp = 2'b01; // backward
+                l_temp = 2'b10; // forward
+                r_temp = 2'b10; // backward
             end
             2'b11 : begin   // go forward
                 next_left_motor = 10'd750;
