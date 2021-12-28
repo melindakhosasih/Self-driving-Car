@@ -75,7 +75,7 @@ module PosCounter(clk, rst, echo, distance_count);
     assign finish = ~echo_reg1 & echo_reg2; // no more reflected signal
 
     // TODO: trace the code and calculate the distance, output it to <distance_count>
-    assign distance_count = (distance_register >> 1) * 340;
+    assign distance_count = distance_register >> 6;
     
 endmodule
 
